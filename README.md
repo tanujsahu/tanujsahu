@@ -2,7 +2,7 @@
 
 # 👋 Hi, I'm Tanuj Sahu
 
-### 🚀 Full Stack Developer • Cloud Enthusiast • Team Lead
+### 🚀 Full Stack Developer 
 
 **Building scalable applications • Leading teams • Exploring AI-powered engineering**
 
