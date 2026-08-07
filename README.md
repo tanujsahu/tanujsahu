@@ -2,7 +2,7 @@
 
 # 👋 Hi, I'm Tanuj Sahu
 
-### Full Stack Developer
+### Full Stack Developer • Team Lead • AWS & Cloud Enthusiast
 
 Building scalable web applications with modern JavaScript frameworks, cloud services, and production-focused engineering practices.
 
@@ -26,11 +26,11 @@ Building scalable web applications with modern JavaScript frameworks, cloud serv
 
 ## 👨‍💻 About Me
 
-I am a **Full Stack Developer and Team Lead** with experience building and maintaining scalable web applications across frontend, backend, database, cloud, and deployment layers.
+I am a **Full Stack Developer and Team Lead** with experience building and maintaining scalable, reliable, and production-ready web applications.
 
-My primary expertise includes **Angular, Node.js, Next.js, MongoDB, AWS, Git, and Jira**. I work closely with development teams on architecture, implementation, code reviews, sprint planning, issue resolution, and production delivery.
+My primary expertise includes **Angular, Node.js, Next.js, MongoDB, AWS, Git, and Jira**. I work across frontend architecture, backend development, cloud infrastructure, deployment, technical planning, and team delivery.
 
-I focus on writing maintainable code, designing reliable application architecture, improving development workflows, and delivering solutions that are practical, scalable, and production-ready.
+I focus on clean architecture, maintainable code, reliable APIs, effective development workflows, and practical solutions that scale with product and business requirements.
 
 ---
 
@@ -68,12 +68,12 @@ I focus on writing maintainable code, designing reliable application architectur
 * Redux
 * Tailwind CSS
 * Material UI
-* Responsive Design
+* Responsive Web Design
 * Component-Based Architecture
 
 ---
 
-### ⚙️ Backend
+### ⚙️ Backend & APIs
 
 <p>
 <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
@@ -84,14 +84,15 @@ I focus on writing maintainable code, designing reliable application architectur
 * Node.js
 * Express.js
 * NestJS
-* RESTful API Development
+* RESTful APIs
 * Microservices Architecture
 * Serverless Applications
 * Third-Party API Integrations
+* Authentication & Authorization
 
 ---
 
-### 🗄️ Database & Storage
+### 🗄️ Database, Cache & Storage
 
 <p>
 <img src="https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white" />
@@ -131,8 +132,8 @@ I focus on writing maintainable code, designing reliable application architectur
 Experience working with:
 
 * EC2
-* AWS Lambda
-* Amazon S3
+* Lambda
+* S3
 * RDS
 * DynamoDB
 * CloudFront
@@ -145,25 +146,27 @@ Experience working with:
 
 ---
 
-## 🔄 DevOps & Development Workflow
+## 🔄 DevOps & Collaboration
 
-<p>
+<p align="center">
+
 <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" />
 <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
 <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" />
 <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white" />
 <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white" />
+
 </p>
 
-* Git & GitHub
 * Git branching and pull-request workflows
 * GitHub Actions
 * CI/CD pipelines
-* Jira
-* Agile development
-* Nginx
+* Jira-based Agile development
+* Code reviews
 * Application deployment
-* Production monitoring and troubleshooting
+* Nginx configuration
+* Production monitoring
+* Troubleshooting and issue resolution
 
 ---
 
@@ -176,6 +179,7 @@ As a Team Lead, I contribute to both technical execution and delivery management
                              │
           ┌──────────────────┼──────────────────┐
           │                  │                  │
+          ▼                  ▼                  ▼
      Architecture        Development        Delivery
           │                  │                  │
     System Design        Code Reviews       Sprint Planning
@@ -183,16 +187,16 @@ As a Team Lead, I contribute to both technical execution and delivery management
     Tech Decisions       Standards          Release Support
 ```
 
-My responsibilities include:
+Key responsibilities include:
 
 * Technical guidance and solution design
 * Code reviews and development standards
 * Sprint planning and task allocation
 * Jira-based project tracking
 * Supporting developers with technical blockers
-* Coordinating with cross-functional teams
+* Cross-functional team coordination
 * Reviewing implementation approaches
-* Supporting releases and production issues
+* Release and production support
 
 ---
 
@@ -205,9 +209,9 @@ My responsibilities include:
 <img src="https://img.shields.io/badge/Claude-D97757?style=flat-square&logo=anthropic&logoColor=white" />
 </p>
 
-I use AI-assisted tools as part of my engineering workflow to improve productivity while keeping architecture, code quality, validation, and technical decisions developer-driven.
+I use AI-assisted tools to improve engineering productivity while keeping architecture, validation, security, code quality, and production decisions developer-driven.
 
-Typical use cases include:
+Typical use cases:
 
 * Code analysis and debugging
 * Architecture discussions
@@ -259,6 +263,8 @@ Typical use cases include:
 
 ## 🎯 Professional Focus
 
+<div align="center">
+
 `Angular` • `Node.js` • `Next.js` • `AWS` • `MongoDB`
 
 `Full Stack Development` • `REST APIs` • `Microservices`
@@ -267,15 +273,47 @@ Typical use cases include:
 
 `Git` • `Jira` • `Code Reviews` • `Team Leadership`
 
+</div>
+
 ---
 
-## 📊 GitHub Stats
+## 📊 GitHub Statistics
 
 <div align="center">
 
-<img height="170" src="https://github-readme-stats.vercel.app/api?username=tanujsahu&show_icons=true&hide_border=true&include_all_commits=true" />
+<img height="170"
+src="https://github-readme-stats.vercel.app/api?username=tanujsahu&show_icons=true&hide_border=true&include_all_commits=true&count_private=true" />
 
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=tanujsahu&layout=compact&hide_border=true" />
+<img height="170"
+src="https://github-readme-stats.vercel.app/api/top-langs/?username=tanujsahu&layout=compact&hide_border=true" />
+
+</div>
+
+<br/>
+
+<div align="center">
+
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=tanujsahu&hide_border=true" />
+
+</div>
+
+---
+
+## 📈 Contribution Activity
+
+<div align="center">
+
+<img src="https://github-readme-activity-graph.vercel.app/graph?username=tanujsahu&hide_border=true&area=true" />
+
+</div>
+
+---
+
+## 👀 Profile Views
+
+<div align="center">
+
+<img src="https://komarev.com/ghpvc/?username=tanujsahu&label=Profile%20Views&style=for-the-badge" />
 
 </div>
 
@@ -283,12 +321,14 @@ Typical use cases include:
 
 ## 🤝 Connect
 
-I'm always interested in discussing software development, cloud architecture, system design, engineering practices, and meaningful technical collaborations.
+I'm always interested in discussing **full-stack development, cloud architecture, system design, engineering practices, AI-assisted development, and technical collaboration**.
 
 <div align="center">
 
 ### Full Stack • Cloud • Architecture • Leadership
 
-⭐ Explore my repositories and projects
+<br/>
+
+**⭐ Explore my repositories and projects**
 
 </div>
