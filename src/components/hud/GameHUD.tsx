@@ -31,13 +31,13 @@ export function GameHUD() {
         : "Central Plaza";
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-3 p-3 sm:p-5">
-      <div className="glass pointer-events-auto max-w-[70vw] rounded-2xl px-4 py-3">
+    <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-col gap-2 p-3 sm:flex-row sm:items-start sm:justify-between sm:p-5">
+      <div className="glass pointer-events-auto max-w-full rounded-2xl px-4 py-3 sm:max-w-[70vw]">
         <p className="font-display text-sm text-white sm:text-base">{profile.name}</p>
         <p className="text-[11px] text-slate-300 sm:text-xs">{profile.title}</p>
         <p className="mt-1 text-xs text-cyan-100">{place}</p>
       </div>
-      <div className="pointer-events-auto flex items-center gap-2">
+      <div className="pointer-events-auto flex max-w-full items-center gap-1.5 overflow-x-auto sm:gap-2">
         <Button
           variant="icon"
           aria-pressed={vehicleFinish === "dark"}

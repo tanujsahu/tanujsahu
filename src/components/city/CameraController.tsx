@@ -130,8 +130,9 @@ export function CameraController() {
     }
     wasInside.current = indoors;
     if (indoors) {
-      zoom.current = MathUtils.damp(zoom.current, 9.2, 2.4, delta);
-      pitch.current = MathUtils.damp(pitch.current, 0.96, 2.4, delta);
+      const narrow = window.innerWidth < 820;
+      zoom.current = MathUtils.damp(zoom.current, narrow ? 12.4 : 9.2, 2.4, delta);
+      pitch.current = MathUtils.damp(pitch.current, narrow ? 1.08 : 0.96, 2.4, delta);
       if (loungeState.aimCamera) {
         const turn = Math.atan2(Math.sin(0.08 - yaw.current), Math.cos(0.08 - yaw.current));
         yaw.current += turn * (1 - Math.exp(-2.2 * delta));

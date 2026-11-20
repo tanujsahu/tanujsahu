@@ -13,7 +13,7 @@ function project(x: number, z: number) {
 }
 
 export function MiniMap() {
-  const { playerRef, nearestId, discovered, travelTo, mode } = useGame();
+  const { playerRef, nearestId, discovered, travelTo, mode, interior } = useGame();
   const [position, setPosition] = useState({ x: 0, z: 8.5 });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function MiniMap() {
     return () => window.cancelAnimationFrame(frame);
   }, [playerRef]);
 
-  if (mode === "intro") return null;
+  if (mode === "intro" || interior === "contact") return null;
   const player = project(position.x, position.z);
   const progress = Math.round((discovered.length / locations.length) * 100);
 

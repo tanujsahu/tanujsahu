@@ -45,7 +45,11 @@ export function ControlsGuide() {
     : ridePrompt || hint || "Walk up to any building. The city guide can open a location directly.";
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-24 z-20 flex items-end justify-between gap-3 p-3 sm:bottom-0 sm:p-5">
+    <div
+      className={`pointer-events-none absolute inset-x-0 z-20 flex items-end justify-between gap-3 p-3 sm:bottom-0 sm:p-5 ${
+        interior === "contact" ? "top-28 sm:top-auto" : "bottom-24"
+      }`}
+    >
       <div className="glass hidden max-w-sm rounded-2xl px-4 py-3 text-xs leading-5 text-slate-300 md:block">
         <p className="font-semibold tracking-wide text-white">Controls</p>
         <p className="mt-1">Arrows or WASD follow the camera: up forward, down back, left and right to the side</p>
@@ -55,7 +59,7 @@ export function ControlsGuide() {
         <p>Click the ground to walk there · F to move anywhere</p>
         <p>Mouse wheel to zoom · M city guide · C classic view</p>
       </div>
-      <div className="glass pointer-events-none mx-auto max-w-md rounded-full px-4 py-2 text-center text-sm text-cyan-50 md:mx-0">
+      <div className="glass pointer-events-none mx-auto max-w-md rounded-full px-4 py-2 text-center text-xs text-cyan-50 sm:text-sm md:mx-0">
         <p aria-live="polite">{prompt}</p>
       </div>
       <div className="hidden w-44 md:block" />

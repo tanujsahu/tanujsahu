@@ -238,7 +238,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const serveDrink = useCallback(
     (kind: DrinkKind) => {
-      if (!loungeState.active || pausedRef.current) return;
+      if (!loungeState.active) return;
       const player = playerRef.current;
       player.x = contactLounge.serve.x;
       player.z = contactLounge.serve.z;

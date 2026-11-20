@@ -16,7 +16,7 @@ import { TechBadge } from "@/components/ui/TechBadge";
 import { useGame } from "@/context/GameContext";
 
 export function LocationPanel() {
-  const { activeId, closeLocation } = useGame();
+  const { activeId, closeLocation, interior } = useGame();
   const panelRef = useRef<HTMLDivElement>(null);
   const location = activeId ? getLocation(activeId) : undefined;
 
@@ -57,10 +57,10 @@ export function LocationPanel() {
   if (!location) return null;
 
   return (
-    <div className="absolute inset-0 z-30 flex justify-end">
+    <div className="absolute inset-0 z-30 flex items-end justify-end sm:items-stretch">
       <button
         type="button"
-        className="absolute inset-0 bg-slate-950/35"
+        className="absolute inset-0 bg-slate-950/25 sm:bg-slate-950/35"
         aria-label="Close location"
         onClick={closeLocation}
       />
@@ -69,12 +69,14 @@ export function LocationPanel() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="location-title"
-        className="glass pointer-events-auto relative flex h-full w-full max-w-xl flex-col"
+        className={`glass pointer-events-auto relative flex w-full flex-col rounded-t-3xl sm:h-full sm:max-w-xl sm:rounded-none ${
+          interior === "contact" ? "max-h-[46vh] sm:max-h-none" : "max-h-[78vh] sm:max-h-none"
+        }`}
       >
         <div className="flex items-start justify-between gap-4 border-b border-white/10 px-5 py-4">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-cyan-200">{location.district}</p>
-            <h2 id="location-title" className="mt-1 font-display text-2xl text-white">
+            <h2 id="location-title" className="mt-1 font-display text-xl text-white sm:text-2xl">
               {location.name}
             </h2>
           </div>
@@ -87,7 +89,7 @@ export function LocationPanel() {
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
           <LocationBody id={location.id} panel={location.panel} projectSlug={location.projectSlug} />
         </div>
       </div>
@@ -300,13 +302,36 @@ function EducationBody() {
 }
 
 function ContactBody() {
-  const { interior } = useGame();
+  const { interior, drink, serveDrink, leaveLounge } = useGame();
   return (
     <div className="space-y-5">
       {interior === "contact" ? (
-        <p className="rounded-2xl border border-amber-200/30 bg-amber-200/10 px-4 py-3 text-sm leading-6 text-amber-50">
-          You are in the lounge. Close this panel to walk to the sofa or the coffee machine, then take a coffee or a tea.
-        </p>
+        <div className="rounded-2xl border border-amber-200/30 bg-amber-200/10 px-4 py-3 text-sm leading-6 text-amber-50">
+          <p>You are in the lounge, with a sofa, table, and coffee machine.</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded-full bg-amber-900 px-4 py-2 text-sm font-semibold text-amber-50"
+              onClick={() => serveDrink("coffee")}
+            >
+              {drink === "coffee" ? "Drinking coffee" : "Coffee"}
+            </button>
+            <button
+              type="button"
+              className="rounded-full bg-amber-200 px-4 py-2 text-sm font-semibold text-slate-950"
+              onClick={() => serveDrink("tea")}
+            >
+              {drink === "tea" ? "Drinking tea" : "Tea"}
+            </button>
+            <button
+              type="button"
+              className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white"
+              onClick={leaveLounge}
+            >
+              Step outside
+            </button>
+          </div>
+        </div>
       ) : null}
       <div>
         <h3 className="font-display text-2xl text-white">{profile.contactHeading}</h3>

@@ -83,7 +83,7 @@ export function MobileControls() {
         type="button"
         onClick={interact}
         disabled={!nearestId && interior !== "contact"}
-        className="absolute bottom-8 right-4 z-30 rounded-full bg-cyan-200 px-5 py-3 text-sm font-semibold text-slate-950 disabled:opacity-40"
+        className="absolute bottom-8 right-4 z-30 min-h-11 rounded-full bg-cyan-200 px-5 py-3 text-sm font-semibold text-slate-950 disabled:opacity-40"
       >
         Explore
       </button>
