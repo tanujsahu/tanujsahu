@@ -12,18 +12,22 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
+import { contactLounge, drinkState, loungeState, type DrinkKind } from "@/data/lounge";
 import { getLocation, locations, playerSpawn } from "@/data/locations";
 import { setAmbientEnabled } from "@/lib/audio";
 import {
   INTERACT_RADIUS,
   dismountRide,
   distanceToEntrance,
+  enterContactLounge,
+  leaveContactLounge,
   mountRide,
   stepPlayer,
   type PlayerState,
   type TravelTarget,
 } from "@/lib/movement";
 import { nearestVehicle, rideState, vehicles, type VehicleId } from "@/data/vehicles";
+import { applyColorTheme, readColorTheme, type ColorTheme } from "@/lib/theme";
 import { detectWebGL } from "@/lib/utils";
 
 export type ViewMode = "intro" | "explore" | "classic";
@@ -31,6 +35,7 @@ export type GraphicsQuality = "balanced" | "high";
 export type RenderPreference = "auto" | "3d" | "map";
 export type MotionPreference = "system" | "reduce" | "allow";
 export type VehicleFinish = "light" | "dark";
+export type { ColorTheme };
 
 interface InputVector {
   x: number;
@@ -55,7 +60,13 @@ interface GameContextValue {
   nearestId: string | null;
   activeId: string | null;
   openLocation: (id: string) => void;
+  presentLocation: (id: string) => void;
   closeLocation: () => void;
+  interior: "contact" | null;
+  nearMachine: boolean;
+  drink: DrinkKind | null;
+  leaveLounge: () => void;
+  serveDrink: (kind: DrinkKind) => void;
   menuOpen: boolean;
   setMenuOpen: (open: boolean) => void;
   settingsOpen: boolean;
@@ -69,6 +80,8 @@ interface GameContextValue {
   toggleFreeRoam: () => void;
   vehicleFinish: VehicleFinish;
   setVehicleFinish: (finish: VehicleFinish) => void;
+  theme: ColorTheme;
+  setTheme: (theme: ColorTheme) => void;
   walkTo: (x: number, z: number) => void;
   travelTo: (id: string) => void;
   interact: () => void;
@@ -108,8 +121,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [sceneReady, setSceneReady] = useState(false);
   const [freeRoam, setFreeRoam] = useState(false);
   const [vehicleFinish, setVehicleFinishState] = useState<VehicleFinish>("dark");
+  const [theme, setThemeState] = useState<ColorTheme>("dark");
   const [ride, setRide] = useState<VehicleId | "walk">("walk");
   const [nearestVehicleId, setNearestVehicleId] = useState<VehicleId | null>(null);
+  const [interior, setInterior] = useState<"contact" | null>(null);
+  const [nearMachine, setNearMachine] = useState(false);
+  const [drink, setDrink] = useState<DrinkKind | null>(null);
 
   const playerRef = useRef<PlayerState>({
     x: playerSpawn.x,
@@ -126,7 +143,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const modeRef = useRef(mode);
   const pausedRef = useRef(false);
   const nearestRef = useRef<string | null>(null);
+  const nearMachineRef = useRef(false);
   const hintTimer = useRef<number | null>(null);
+  const drinkTimer = useRef<number | null>(null);
 
   const reducedMotion =
     motionPreference === "system" ? systemReduced : motionPreference === "reduce";
@@ -147,7 +166,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const exitLounge = useCallback(() => {
+    if (!loungeState.active) return;
+    leaveContactLounge(playerRef.current);
+    setInterior(null);
+    nearMachineRef.current = false;
+    setNearMachine(false);
+    drinkState.kind = null;
+    setDrink(null);
+    if (drinkTimer.current) window.clearTimeout(drinkTimer.current);
+  }, []);
+
   const setMode = useCallback((next: ViewMode) => {
+    exitLounge();
     setModeState(next);
     setActiveId(null);
     setMenuOpen(false);
@@ -164,7 +195,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     } catch {
       // Storage and history can fail in private contexts. The view still changes.
     }
-  }, []);
+  }, [exitLounge]);
 
   const openLocation = useCallback((id: string) => {
     if (!getLocation(id)) return;
@@ -176,10 +207,62 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const closeLocation = useCallback(() => setActiveId(null), []);
 
+  const presentLocation = useCallback(
+    (id: string) => {
+      if (!getLocation(id)) return;
+      const entering =
+        id === "contact" && !useMap && modeRef.current === "explore" && !loungeState.active;
+      if (entering) {
+        if (rideState.mode !== "walk") {
+          dismountRide(playerRef.current);
+          setRide("walk");
+        }
+        enterContactLounge(playerRef.current);
+        setInterior("contact");
+        travelRef.current = null;
+        walkRef.current = null;
+      }
+      openLocation(id);
+      if (entering) {
+        setHint("You're in the lounge. Close this panel, then walk to the coffee machine for coffee or tea.");
+      }
+    },
+    [openLocation, setHint, useMap],
+  );
+
+  const leaveLounge = useCallback(() => {
+    exitLounge();
+    setActiveId(null);
+    setHint("You stepped back outside.");
+  }, [exitLounge, setHint]);
+
+  const serveDrink = useCallback(
+    (kind: DrinkKind) => {
+      if (!loungeState.active || pausedRef.current) return;
+      const player = playerRef.current;
+      player.x = contactLounge.serve.x;
+      player.z = contactLounge.serve.z;
+      player.yaw = contactLounge.serve.yaw;
+      player.walking = false;
+      walkRef.current = null;
+      drinkState.kind = kind;
+      drinkState.until = performance.now() + 5200;
+      setDrink(kind);
+      setHint(kind === "coffee" ? "Fresh coffee." : "Fresh tea.");
+      if (drinkTimer.current) window.clearTimeout(drinkTimer.current);
+      drinkTimer.current = window.setTimeout(() => {
+        drinkState.kind = null;
+        setDrink(null);
+      }, 5200);
+    },
+    [setHint],
+  );
+
   const travelTo = useCallback(
     (id: string) => {
       const location = getLocation(id);
       if (!location) return;
+      exitLounge();
       if (rideState.mode !== "walk") {
         dismountRide(playerRef.current);
         setRide("walk");
@@ -190,7 +273,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setActiveId(null);
       if (modeRef.current !== "explore") setMode("explore");
     },
-    [setMode],
+    [exitLounge, setMode],
   );
 
   const toggleFreeRoam = useCallback(() => {
@@ -206,6 +289,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const toggleRide = useCallback((requested?: VehicleId) => {
     if (modeRef.current !== "explore" || pausedRef.current) return;
+    if (loungeState.active) {
+      setHint("Step outside before using the bike or car.");
+      return;
+    }
     const player = playerRef.current;
     travelRef.current = null;
     walkRef.current = null;
@@ -242,10 +329,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
   );
 
   const interact = useCallback(() => {
+    if (modeRef.current !== "explore" || pausedRef.current) return;
+    if (loungeState.active) {
+      presentLocation("contact");
+      return;
+    }
     const id = nearestRef.current;
-    if (!id || modeRef.current !== "explore" || pausedRef.current) return;
-    openLocation(id);
-  }, [openLocation]);
+    if (!id) return;
+    presentLocation(id);
+  }, [presentLocation]);
 
   const toggleSound = useCallback(() => {
     setSoundOn((current) => {
@@ -274,6 +366,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const setVehicleFinish = useCallback((finish: VehicleFinish) => {
     setVehicleFinishState(finish);
     window.localStorage.setItem("portfolio-vehicle-finish", finish);
+  }, []);
+
+  const setTheme = useCallback((next: ColorTheme) => {
+    setThemeState(next);
+    applyColorTheme(next);
+    window.localStorage.setItem("portfolio-theme", next);
   }, []);
 
   // Browser preferences are applied once after hydration so server HTML and the first client render match.
@@ -311,6 +409,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setVehicleFinishState(
       readStored("portfolio-vehicle-finish", ["light", "dark"] as const, "dark"),
     );
+    const storedTheme = readColorTheme();
+    setThemeState(storedTheme);
+    applyColorTheme(storedTheme);
 
     const storedDiscovered = window.sessionStorage.getItem("portfolio-discovered");
     if (storedDiscovered) {
@@ -411,8 +512,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }
 
       if (key === "e" && !event.repeat) {
-        if (modeRef.current === "explore" && !pausedRef.current && nearestRef.current) {
-          openLocation(nearestRef.current);
+        if (modeRef.current === "explore" && !pausedRef.current) {
+          if (loungeState.active) presentLocation("contact");
+          else if (nearestRef.current) presentLocation(nearestRef.current);
         }
         return;
       }
@@ -472,7 +574,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("blur", clear);
       clear();
     };
-  }, [activeId, menuOpen, openLocation, setMode, settingsOpen, toggleFreeRoam, toggleRide]);
+  }, [activeId, menuOpen, presentLocation, setMode, settingsOpen, toggleFreeRoam, toggleRide]);
 
   useEffect(() => {
     let frame = 0;
@@ -506,6 +608,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
         );
         travelRef.current = step.travel;
         walkRef.current = step.walk;
+        if (step.exitLounge) {
+          setInterior(null);
+          nearMachineRef.current = false;
+          setNearMachine(false);
+          drinkState.kind = null;
+          setDrink(null);
+          setHint("You stepped back outside.");
+        }
         if (rideState.mode !== "walk") {
           const vehicle = vehicles[rideState.mode];
           vehicle.x = playerRef.current.x;
@@ -522,23 +632,42 @@ export function GameProvider({ children }: { children: ReactNode }) {
           setNearestVehicleId(nearbyRide);
         }
 
-        let best: string | null = null;
-        let bestDistance = INTERACT_RADIUS;
-        for (const location of locations) {
-          const distance = distanceToEntrance(
-            playerRef.current.x,
-            playerRef.current.z,
-            location,
-          );
-          if (distance < bestDistance) {
-            bestDistance = distance;
-            best = location.id;
+        if (loungeState.active) {
+          const spot = contactLounge.serve;
+          const near =
+            Math.hypot(playerRef.current.x - spot.x, playerRef.current.z - spot.z) < contactLounge.reach;
+          if (near !== nearMachineRef.current) {
+            nearMachineRef.current = near;
+            setNearMachine(near);
           }
-        }
-        if (best !== lastNearest) {
-          lastNearest = best;
-          nearestRef.current = best;
-          setNearestId(best);
+          if (lastNearest !== "contact") {
+            lastNearest = "contact";
+            nearestRef.current = "contact";
+            setNearestId("contact");
+          }
+        } else {
+          if (nearMachineRef.current) {
+            nearMachineRef.current = false;
+            setNearMachine(false);
+          }
+          let best: string | null = null;
+          let bestDistance = INTERACT_RADIUS;
+          for (const location of locations) {
+            const distance = distanceToEntrance(
+              playerRef.current.x,
+              playerRef.current.z,
+              location,
+            );
+            if (distance < bestDistance) {
+              bestDistance = distance;
+              best = location.id;
+            }
+          }
+          if (best !== lastNearest) {
+            lastNearest = best;
+            nearestRef.current = best;
+            setNearestId(best);
+          }
         }
       }
 
@@ -568,7 +697,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
       nearestId,
       activeId,
       openLocation,
+      presentLocation,
       closeLocation,
+      interior,
+      nearMachine,
+      drink,
+      leaveLounge,
+      serveDrink,
       menuOpen,
       setMenuOpen,
       settingsOpen,
@@ -582,6 +717,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       toggleFreeRoam,
       vehicleFinish,
       setVehicleFinish,
+      theme,
+      setTheme,
       walkTo,
       travelTo,
       interact,
@@ -602,18 +739,25 @@ export function GameProvider({ children }: { children: ReactNode }) {
       menuOpen,
       mode,
       motionPreference,
+      drink,
+      interior,
+      leaveLounge,
+      nearMachine,
       nearestId,
       nearestVehicleId,
       openLocation,
+      presentLocation,
       reducedMotion,
       renderPreference,
       ride,
       sceneReady,
+      serveDrink,
       setGraphics,
       setHint,
       setMode,
       setMotionPreference,
       setRenderPreference,
+      setTheme,
       setVehicleFinish,
       settingsOpen,
       soundOn,
@@ -622,6 +766,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       toggleSound,
       travelTo,
       walkTo,
+      theme,
       useMap,
       vehicleFinish,
       webglAvailable,

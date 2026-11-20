@@ -5,7 +5,7 @@ import { useGame } from "@/context/GameContext";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export function ControlsGuide() {
-  const { nearestId, nearestVehicleId, ride, hint, mode } = useGame();
+  const { nearestId, nearestVehicleId, ride, hint, mode, interior, nearMachine, drink } = useGame();
   const coarse = useMediaQuery("(max-width: 820px)");
   if (mode === "intro") return null;
 
@@ -22,7 +22,23 @@ export function ControlsGuide() {
             ? "Tap Ride to use the bike"
             : "Press V to ride the bike"
           : null;
-  const prompt = nearest
+  const loungePrompt =
+    interior === "contact"
+      ? drink
+        ? drink === "coffee"
+          ? "Enjoying a coffee."
+          : "Enjoying a tea."
+        : nearMachine
+          ? coarse
+            ? "Tap Coffee or Tea"
+            : "Take a coffee or a tea, or click a cup"
+          : coarse
+            ? "Walk to the sofa or the coffee machine. Tap Explore for details."
+            : "Walk to the sofa or the coffee machine. Press E for the contact details."
+      : null;
+  const prompt = loungePrompt
+    ? loungePrompt
+    : nearest
     ? coarse
       ? `Tap Explore to enter ${nearest.shortName}`
       : `Press E to explore ${nearest.shortName}`
@@ -32,7 +48,7 @@ export function ControlsGuide() {
     <div className="pointer-events-none absolute inset-x-0 bottom-24 z-20 flex items-end justify-between gap-3 p-3 sm:bottom-0 sm:p-5">
       <div className="glass hidden max-w-sm rounded-2xl px-4 py-3 text-xs leading-5 text-slate-300 md:block">
         <p className="font-semibold tracking-wide text-white">Controls</p>
-        <p className="mt-1">WASD or arrow keys to walk</p>
+        <p className="mt-1">Arrows or WASD follow the camera: up forward, down back, left and right to the side</p>
         <p>E or click a nearby building to explore</p>
         <p>V to ride the bike or drive the car, then V to step off</p>
         <p>Drag to look left, right, up, and down</p>

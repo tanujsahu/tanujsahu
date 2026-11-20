@@ -5,7 +5,7 @@ import { useGame } from "@/context/GameContext";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export function MobileControls() {
-  const { joystickRef, interact, nearestId, nearestVehicleId, ride, toggleRide, mode, freeRoam, toggleFreeRoam } = useGame();
+  const { joystickRef, interact, nearestId, nearestVehicleId, ride, toggleRide, mode, freeRoam, toggleFreeRoam, interior } = useGame();
   const coarse = useMediaQuery("(max-width: 820px)");
   const base = useRef<HTMLDivElement>(null);
   const knob = useRef<HTMLDivElement>(null);
@@ -82,7 +82,7 @@ export function MobileControls() {
       <button
         type="button"
         onClick={interact}
-        disabled={!nearestId}
+        disabled={!nearestId && interior !== "contact"}
         className="absolute bottom-8 right-4 z-30 rounded-full bg-cyan-200 px-5 py-3 text-sm font-semibold text-slate-950 disabled:opacity-40"
       >
         Explore

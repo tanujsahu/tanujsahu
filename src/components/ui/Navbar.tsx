@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { profile } from "@/data/profile";
+import { useGame } from "@/context/GameContext";
 import { cn } from "@/lib/utils";
 
 function navLinkClass(id: string, mobile = false) {
@@ -36,6 +37,8 @@ export function Navbar({
   home?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const { theme, setTheme } = useGame();
+  const light = theme === "light";
   const hrefFor = (id: string) => (home ? `#${id}` : `/?view=classic#${id}`);
 
   return (
@@ -53,6 +56,15 @@ export function Navbar({
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            aria-pressed={light}
+            aria-label={light ? "Switch to dark mode" : "Switch to light mode"}
+            className="grid h-10 w-10 place-items-center rounded-full border border-white/15"
+            onClick={() => setTheme(light ? "dark" : "light")}
+          >
+            {light ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           {onExplore ? (
             <button
               type="button"

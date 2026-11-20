@@ -6,6 +6,7 @@ import { ControlsGuide } from "@/components/hud/ControlsGuide";
 import { GameHUD } from "@/components/hud/GameHUD";
 import { IntroOverlay } from "@/components/hud/IntroOverlay";
 import { LocationPanel } from "@/components/hud/LocationPanel";
+import { LoungeBar } from "@/components/hud/LoungeBar";
 import { MiniMap } from "@/components/hud/MiniMap";
 import { MobileControls } from "@/components/hud/MobileControls";
 import { NavigationMenu } from "@/components/hud/NavigationMenu";
@@ -43,6 +44,7 @@ export function CityExperience() {
       </div>
       <GameHUD />
       <ControlsGuide />
+      <LoungeBar />
       <MiniMap />
       <MobileControls />
       {mode === "intro" ? <IntroOverlay /> : null}

@@ -25,7 +25,7 @@ export function Buildings() {
 }
 
 function Building({ location, high }: { location: CityLocation; high: boolean }) {
-  const { playerRef, openLocation, setHint, nearestId } = useGame();
+  const { playerRef, presentLocation, setHint, nearestId, interior } = useGame();
   const beacon = useRef<Mesh>(null);
   const labelGroup = useRef<Group>(null);
   const marker = useRef<Mesh>(null);
@@ -102,7 +102,7 @@ function Building({ location, high }: { location: CityLocation; high: boolean })
         playerRef.current.z,
         current,
       );
-      if (distance <= INTERACT_RADIUS + 0.6) openLocation(location.id);
+      if (distance <= INTERACT_RADIUS + 0.6) presentLocation(location.id);
       else setHint(`Move closer to ${location.shortName}, or open it from the city guide.`);
     },
     onPointerOver: (event: ThreeEvent<PointerEvent>) => {
@@ -113,6 +113,8 @@ function Building({ location, high }: { location: CityLocation; high: boolean })
       document.body.style.cursor = "";
     },
   };
+
+  if (location.id === "contact" && interior === "contact") return null;
 
   return (
     <group position={[x, 0, z]} userData={{ occluder: true }}>

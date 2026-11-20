@@ -14,7 +14,7 @@ export function Hero() {
 
   return (
     <section id="top" className="relative overflow-hidden pt-28 sm:pt-32">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_36%),radial-gradient(circle_at_80%_20%,rgba(167,139,250,0.16),transparent_32%),linear-gradient(#0b1220,#070b14)]" />
+      <div className="theme-hero pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_36%),radial-gradient(circle_at_80%_20%,rgba(167,139,250,0.16),transparent_32%),linear-gradient(#0b1220,#070b14)]" />
       <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-20 sm:px-6 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-200">

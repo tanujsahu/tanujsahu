@@ -1,9 +1,10 @@
 "use client";
 
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef, type ReactNode } from "react";
 import { useFrame } from "@react-three/fiber";
-import { DoubleSide, MathUtils, type Group, type Mesh } from "three";
+import { DoubleSide, MathUtils, type Group, type Mesh, type MeshStandardMaterial } from "three";
 import { pointerIntent } from "@/components/city/cameraRig";
+import { drinkState } from "@/data/lounge";
 import { rideState } from "@/data/vehicles";
 import { useGame } from "@/context/GameContext";
 
@@ -18,6 +19,8 @@ export function Character() {
   const rightLeg = useRef<Group>(null);
   const leftArm = useRef<Group>(null);
   const rightArm = useRef<Group>(null);
+  const cup = useRef<Group>(null);
+  const liquid = useRef<MeshStandardMaterial>(null);
   const cape = useRef<Group>(null);
   const scarf = useRef<Mesh>(null);
   const halo = useRef<Mesh>(null);
@@ -65,9 +68,14 @@ export function Character() {
     const leg = seated ? 1.2 : swing;
     if (leftLeg.current) leftLeg.current.rotation.x = leg;
     if (rightLeg.current) rightLeg.current.rotation.x = seated ? 1.2 : -swing;
-    const arm = seated ? (riding === "bike" ? -0.85 : -0.45) : -swing * 0.72;
-    if (leftArm.current) leftArm.current.rotation.x = seated ? arm : -swing * 0.72;
-    if (rightArm.current) rightArm.current.rotation.x = seated ? arm : swing * 0.72;
+    const sipping = drinkState.kind !== null && performance.now() < drinkState.until;
+    const arm = seated ? (riding === "bike" ? -0.85 : -0.45) : sipping ? -1.15 : -swing * 0.72;
+    if (leftArm.current) leftArm.current.rotation.x = seated ? arm : sipping ? -swing * 0.3 : -swing * 0.72;
+    if (rightArm.current) rightArm.current.rotation.x = seated ? arm : sipping ? -1.15 : swing * 0.72;
+    if (cup.current) cup.current.visible = sipping && !seated;
+    if (sipping && liquid.current && drinkState.kind) {
+      liquid.current.color.set(drinkState.kind === "tea" ? "#e8b86d" : "#6f4e37");
+    }
     if (cape.current) {
       cape.current.rotation.x =
         0.22 + Math.sin(time * (player.walking ? 8 : 1.5)) * (player.walking || player.traveling ? 0.28 : 0.06);
@@ -175,7 +183,18 @@ export function Character() {
             </mesh>
           </group>
           <Limb ref={leftArm} position={[-0.34, 1.2, 0]} color="#232b3b" />
-          <Limb ref={rightArm} position={[0.34, 1.2, 0]} color="#232b3b" />
+          <Limb ref={rightArm} position={[0.34, 1.2, 0]} color="#232b3b">
+            <group ref={cup} position={[0, -0.34, 0.1]} visible={false}>
+              <mesh>
+                <cylinderGeometry args={[0.045, 0.035, 0.08, 10]} />
+                <meshStandardMaterial color="#f8fafc" roughness={0.4} />
+              </mesh>
+              <mesh position={[0, 0.03, 0]}>
+                <cylinderGeometry args={[0.038, 0.038, 0.02, 10]} />
+                <meshStandardMaterial ref={liquid} color="#6f4e37" roughness={0.3} />
+              </mesh>
+            </group>
+          </Limb>
         </group>
         <Limb ref={leftLeg} position={[-0.12, 0.72, 0]} color="#121826" length={0.34} />
         <Limb ref={rightLeg} position={[0.12, 0.72, 0]} color="#121826" length={0.34} />
@@ -237,10 +256,11 @@ export function GroundNavigator() {
 
 const Limb = forwardRef<
   Group,
-  { position: [number, number, number]; color: string; length?: number }
->(function Limb({ position, color, length = 0.28 }, ref) {
+  { position: [number, number, number]; color: string; length?: number; children?: ReactNode }
+>(function Limb({ position, color, length = 0.28, children }, ref) {
   return (
     <group ref={ref} position={position}>
+      {children}
       <mesh position={[0, -length / 2, 0]} castShadow>
         <capsuleGeometry args={[0.065, length, 3, 6]} />
         <meshStandardMaterial color={color} roughness={0.55} />

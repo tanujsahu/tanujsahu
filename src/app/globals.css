@@ -7,6 +7,13 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
+  background: #070b14;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  background: #f4f7fb;
 }
 
 body {
@@ -48,6 +55,130 @@ h3,
     radial-gradient(circle at 78% 12%, rgba(167, 139, 250, 0.16), transparent 26%),
     radial-gradient(circle at 50% 100%, rgba(251, 146, 60, 0.16), transparent 32%),
     linear-gradient(#12182a, #070b14 58%);
+}
+
+body,
+.glass,
+header,
+button,
+a,
+input,
+textarea,
+select,
+.theme-hero,
+.theme-map,
+.theme-scrim {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+html[data-theme="light"] body {
+  background: #f4f7fb;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.94));
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  color: #0f172a;
+}
+
+html[data-theme="light"] .city-sky,
+html[data-theme="light"] .theme-hero,
+html[data-theme="light"] .theme-map {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(14, 165, 233, 0.16), transparent 32%),
+    radial-gradient(circle at 82% 8%, rgba(139, 92, 246, 0.12), transparent 28%),
+    linear-gradient(#f8fbff, #e7eef6 70%);
+}
+
+html[data-theme="light"] .theme-scrim {
+  background: linear-gradient(90deg, rgba(244, 247, 251, 0.92), rgba(244, 247, 251, 0.35), transparent);
+}
+
+html[data-theme="light"] .bg-\[\#070b14\] {
+  background-color: #f4f7fb;
+}
+
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .hover\:text-white:hover {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-200 {
+  color: #1e293b;
+}
+
+html[data-theme="light"] .text-slate-300 {
+  color: #334155;
+}
+
+html[data-theme="light"] .text-slate-400 {
+  color: #475569;
+}
+
+html[data-theme="light"] .text-cyan-50,
+html[data-theme="light"] .text-cyan-100,
+html[data-theme="light"] .text-cyan-200 {
+  color: #0f766e;
+}
+
+html[data-theme="light"] .text-violet-200 {
+  color: #6d28d9;
+}
+
+html[data-theme="light"] .text-amber-50,
+html[data-theme="light"] .text-amber-100 {
+  color: #92400e;
+}
+
+html[data-theme="light"] .bg-amber-900.text-amber-50 {
+  color: #fffbeb;
+}
+
+html[data-theme="light"] .bg-slate-950,
+html[data-theme="light"] .bg-slate-950\/35,
+html[data-theme="light"] .bg-slate-950\/50,
+html[data-theme="light"] .bg-slate-950\/55,
+html[data-theme="light"] .bg-slate-950\/60,
+html[data-theme="light"] .bg-slate-950\/70,
+html[data-theme="light"] .bg-slate-950\/75,
+html[data-theme="light"] .bg-slate-950\/80 {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+html[data-theme="light"] .bg-slate-950\/35,
+html[data-theme="light"] .bg-slate-950\/60 {
+  background-color: rgba(15, 23, 42, 0.28);
+}
+
+html[data-theme="light"] .bg-white\/5,
+html[data-theme="light"] .hover\:bg-white\/5:hover,
+html[data-theme="light"] .bg-white\/10,
+html[data-theme="light"] .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+html[data-theme="light"] .border-white\/10,
+html[data-theme="light"] .border-white\/15,
+html[data-theme="light"] .border-white\/20 {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .bg-slate-800 {
+  background-color: #e2e8f0;
+}
+
+html[data-theme="light"] ::selection {
+  background: rgba(15, 118, 110, 0.18);
+  color: #0f172a;
 }
 
 @media (prefers-reduced-motion: reduce) {

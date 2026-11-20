@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useGame, type GraphicsQuality, type MotionPreference, type RenderPreference, type VehicleFinish } from "@/context/GameContext";
+import { useGame, type ColorTheme, type GraphicsQuality, type MotionPreference, type RenderPreference, type VehicleFinish } from "@/context/GameContext";
 
 export function SettingsPanel() {
   const {
@@ -20,6 +20,8 @@ export function SettingsPanel() {
     toggleFreeRoam,
     vehicleFinish,
     setVehicleFinish,
+    theme,
+    setTheme,
   } = useGame();
 
   if (!settingsOpen) return null;
@@ -52,6 +54,15 @@ export function SettingsPanel() {
           </button>
         </div>
         <div className="mt-5 space-y-5 text-sm">
+          <Choice
+            label="Appearance"
+            value={theme}
+            options={[
+              ["dark", "Dark"],
+              ["light", "Light"],
+            ]}
+            onChange={(value) => setTheme(value as ColorTheme)}
+          />
           <label className="flex items-center justify-between gap-4">
             <span>Move anywhere</span>
             <input type="checkbox" checked={freeRoam} onChange={toggleFreeRoam} />

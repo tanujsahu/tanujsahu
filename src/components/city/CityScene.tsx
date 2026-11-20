@@ -3,6 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { ACESFilmicToneMapping } from "three";
 import { Buildings } from "@/components/city/Building";
+import { ContactLounge } from "@/components/city/ContactLounge";
 import { CameraController, CameraRigDirector } from "@/components/city/CameraController";
 import { Character, GroundNavigator, WalkMarker } from "@/components/city/Character";
 import { CityEnvironment } from "@/components/city/CityEnvironment";
@@ -11,7 +12,7 @@ import { InteractionManager } from "@/components/city/InteractionManager";
 import { useGame } from "@/context/GameContext";
 
 export function CityScene() {
-  const { graphics, reducedMotion, setSceneReady } = useGame();
+  const { graphics, reducedMotion, setSceneReady, interior } = useGame();
   const high = graphics === "high" && !reducedMotion;
 
   return (
@@ -37,6 +38,7 @@ export function CityScene() {
         <CityEnvironment />
         <GroundNavigator />
         <Buildings />
+        {interior === "contact" ? <ContactLounge /> : null}
         <Vehicles />
         <WalkMarker />
         <Character />

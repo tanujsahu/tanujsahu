@@ -300,8 +300,14 @@ function EducationBody() {
 }
 
 function ContactBody() {
+  const { interior } = useGame();
   return (
     <div className="space-y-5">
+      {interior === "contact" ? (
+        <p className="rounded-2xl border border-amber-200/30 bg-amber-200/10 px-4 py-3 text-sm leading-6 text-amber-50">
+          You are in the lounge. Close this panel to walk to the sofa or the coffee machine, then take a coffee or a tea.
+        </p>
+      ) : null}
       <div>
         <h3 className="font-display text-2xl text-white">{profile.contactHeading}</h3>
         <p className="mt-2 text-sm leading-6 text-slate-300">{profile.contactDescription}</p>

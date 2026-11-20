@@ -49,13 +49,13 @@ export function IntroOverlay() {
         </Button>
       </div>
       <p className="mt-4 text-xs text-slate-400">
-        After you enter, walk with WASD or the arrows. Drag to look left, right, up, and down. On a phone, use the joystick and drag the city to look around.
+        After you enter, walk with the arrows or WASD. Up moves forward, down moves back, and left and right move to the side, following the camera. Drag to look around. On a phone, use the joystick and drag the city to look around.
       </p>
     </div>
   );
 
   return (
-    <div className="absolute inset-0 z-30 flex items-end bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent p-4 sm:items-center sm:bg-gradient-to-r sm:from-slate-950/75 sm:via-slate-950/25 sm:to-transparent sm:p-10">
+    <div className="theme-scrim absolute inset-0 z-30 flex items-end bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent p-4 sm:items-center sm:bg-gradient-to-r sm:from-slate-950/75 sm:via-slate-950/25 sm:to-transparent sm:p-10">
       {reduce ? (
         content
       ) : (

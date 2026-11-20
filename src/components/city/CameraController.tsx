@@ -4,7 +4,8 @@ import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { MathUtils, Raycaster, Vector3, type Object3D } from "three";
-import { cameraRig, pointerIntent } from "@/components/city/cameraRig";
+import { cameraAim, cameraRig, pointerIntent } from "@/components/city/cameraRig";
+import { loungeState } from "@/data/lounge";
 import { useGame } from "@/context/GameContext";
 
 export function CameraRigDirector() {
@@ -48,6 +49,7 @@ export function CameraController() {
   const yaw = useRef(0.64);
   const pitch = useRef(1.12);
   const drag = useRef({ active: false, x: 0, y: 0, moved: false });
+  const wasInside = useRef(false);
 
   useEffect(() => {
     modeRef.current = mode;
@@ -78,6 +80,7 @@ export function CameraController() {
       if (!drag.current.moved && dx * dx + dy * dy < 36) return;
       drag.current.moved = true;
       pointerIntent.dragging = true;
+      loungeState.aimCamera = false;
       drag.current.x = event.clientX;
       drag.current.y = event.clientY;
       yaw.current -= dx * 0.0055;
@@ -119,18 +122,41 @@ export function CameraController() {
       return;
     }
 
+    cameraAim.yaw = yaw.current;
+    const indoors = loungeState.active;
+    if (!indoors && wasInside.current) {
+      zoom.current = 18;
+      pitch.current = 1.05;
+    }
+    wasInside.current = indoors;
+    if (indoors) {
+      zoom.current = MathUtils.damp(zoom.current, 9.2, 2.4, delta);
+      pitch.current = MathUtils.damp(pitch.current, 0.96, 2.4, delta);
+      if (loungeState.aimCamera) {
+        const turn = Math.atan2(Math.sin(0.08 - yaw.current), Math.cos(0.08 - yaw.current));
+        yaw.current += turn * (1 - Math.exp(-2.2 * delta));
+      }
+    }
+
     const distance = zoom.current;
     const horizontal = Math.cos(pitch.current) * distance;
-    lookTarget.current.set(player.x, 1.45, player.z);
+    const focusX = indoors ? 29 : player.x;
+    const focusZ = indoors ? -31.5 : player.z;
+    lookTarget.current.set(focusX, indoors ? 0.85 : 1.45, focusZ);
     desired.current.set(
-      player.x + Math.sin(yaw.current) * horizontal,
-      1.45 + Math.sin(pitch.current) * distance + (player.traveling ? 2.2 : 0),
-      player.z + Math.cos(yaw.current) * horizontal,
+      focusX + Math.sin(yaw.current) * horizontal,
+      (indoors ? 0.85 : 1.45) + Math.sin(pitch.current) * distance + (player.traveling && !indoors ? 2.2 : 0),
+      focusZ + Math.cos(yaw.current) * horizontal,
     );
+
+    if (indoors) {
+      desired.current.x = MathUtils.clamp(desired.current.x, 25.2, 32.8);
+      desired.current.z = MathUtils.clamp(desired.current.z, -34.2, -28.1);
+    }
 
     direction.current.copy(desired.current).sub(lookTarget.current);
     const span = direction.current.length();
-    if (span > 0.01) {
+    if (!loungeState.active && span > 0.01) {
       direction.current.multiplyScalar(1 / span);
       const caster = raycaster.current;
       caster.set(lookTarget.current, direction.current);

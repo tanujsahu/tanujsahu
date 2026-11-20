@@ -74,7 +74,7 @@ export function FallbackMap() {
         walkTo(x, z);
       }}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.08),transparent_42%),linear-gradient(#10182a,#070b14)]" />
+      <div className="theme-map pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.08),transparent_42%),linear-gradient(#10182a,#070b14)]" />
       <p className="pointer-events-none absolute left-1/2 top-20 z-10 max-w-md -translate-x-1/2 rounded-full border border-white/10 bg-slate-950/70 px-4 py-2 text-center text-xs text-slate-300">
         {reason}
       </p>
